@@ -6,6 +6,7 @@ require 'bundler'
 require 'motion-blitz'
 require 'bubble-wrap'
 require 'motion-support'
+require 'guard/motion'
 Bundler.require
 
 # require 'bubble-wrap'
