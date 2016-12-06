@@ -1,5 +1,6 @@
 schema "0001 initial" do
   entity "User" do
+    integer16 :id, optional: true
     string :email
     string :password
     string :password_confirmation
@@ -8,6 +9,7 @@ schema "0001 initial" do
   end
 
   entity "Company" do
+    integer16 :id, optional: true
     string :title
 
     belongs_to  :owner, inverse: "User.companies"
@@ -16,6 +18,7 @@ schema "0001 initial" do
   end
 
   entity "Category" do
+    integer16 :id, optional: true
     string :name
 
     belongs_to :company
@@ -24,6 +27,7 @@ schema "0001 initial" do
   end
 
   entity "Address" do
+    integer16 :id, optional: true
     string :city
     string :state
     string :country
@@ -40,6 +44,7 @@ schema "0001 initial" do
   end
 
   entity "Input" do
+    integer16 :id, optional: true
     string :name
     string :label
     string :value
@@ -53,6 +58,7 @@ schema "0001 initial" do
   end
 
   entity "Meta" do
+    integer16 :id, optional: true
     string :key
     string :value
 
@@ -60,6 +66,7 @@ schema "0001 initial" do
   end
 
   entity "Product" do
+    integer16 :id, optional: true
     string :name
 
     has_many :inputs
