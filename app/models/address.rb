@@ -1,0 +1,3 @@
+class Address < CDQManagedObject
+
+end

@@ -1,0 +1,3 @@
+class Product < CDQManagedObject
+
+end
