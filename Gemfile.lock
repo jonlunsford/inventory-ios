@@ -188,6 +188,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
+    webstub (1.1.6)
     xcodeproj (1.4.1)
       CFPropertyList (~> 2.3.3)
       activesupport (>= 3)
@@ -215,6 +216,7 @@ DEPENDENCIES
   newclear
   rake
   redpotion
+  webstub
 
 BUNDLED WITH
    1.13.6

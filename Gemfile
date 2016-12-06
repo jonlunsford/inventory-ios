@@ -11,6 +11,7 @@ gem "motion-support"
 gem "afmotion"
 gem "jsonapi-serializers"
 gem 'guard-motion', require: 'guard/motion', github: 'satoyos/guard-motion', branch: 'inherit_Plugin'
+gem 'webstub'
 
 # Debugging tools
 gem "newclear" # Completely wipe out the simulator and rebuild
