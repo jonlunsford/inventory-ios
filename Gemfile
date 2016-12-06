@@ -5,8 +5,11 @@ gem "motion-cocoapods"
 gem "redpotion"
 gem "cdq" # Core Data
 gem "motion-yaml", "1.4" # Version 1.5 breaks CDQ
-gem "motion-rest", github: "andrewhavens/motion-rest"
 gem "motion-provisioning"
+gem "motion-appstore"
+gem "motion-support"
+gem "afmotion"
+gem "jsonapi-serializers"
 
 # Debugging tools
 gem "newclear" # Completely wipe out the simulator and rebuild

@@ -8,6 +8,8 @@ class AppDelegate < PM::Delegate
   ApplicationStylesheet.new(nil).application_setup
 
   def on_load(app, options)
+    return true if RUBYMOTION_ENV == 'test'
+
     cdq.setup # Remove this if you aren't using CDQ
     open HomeScreen.new(nav_bar: true)
   end
