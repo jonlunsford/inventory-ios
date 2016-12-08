@@ -1,23 +1,24 @@
-schema "0001 initial" do
-  entity "User" do
+schema '0001 initial' do
+  entity 'User' do
     integer16 :id, optional: true
     string :email
     string :password
     string :password_confirmation
 
-    has_many :companies, inverse: "Company.owner"
+    has_many :companies, inverse: 'Company.owner'
+    has_one :session, inverse: 'Session.user'
   end
 
-  entity "Company" do
+  entity 'Company' do
     integer16 :id, optional: true
     string :title
 
-    belongs_to  :owner, inverse: "User.companies"
+    belongs_to  :owner, inverse: 'User.companies'
     has_many    :categories
-    has_one     :address, inverse: "Address.company"
+    has_one     :address, inverse: 'Address.company'
   end
 
-  entity "Category" do
+  entity 'Category' do
     integer16 :id, optional: true
     string :name
 
@@ -26,7 +27,7 @@ schema "0001 initial" do
     has_many :products, plural_inverse: true
   end
 
-  entity "Address" do
+  entity 'Address' do
     integer16 :id, optional: true
     string :city
     string :state
@@ -39,11 +40,11 @@ schema "0001 initial" do
     decimal :lat
     decimal :long
 
-    belongs_to :company, inverse: "Company.address"
-    belongs_to :input, inverse: "Input.address"
+    belongs_to :company, inverse: 'Company.address'
+    belongs_to :input, inverse: 'Input.address'
   end
 
-  entity "Input" do
+  entity 'Input' do
     integer16 :id, optional: true
     string :name
     string :label
@@ -57,15 +58,15 @@ schema "0001 initial" do
     has_many :metas
   end
 
-  entity "Meta" do
+  entity 'Meta' do
     integer16 :id, optional: true
     string :key
     string :value
 
-    belongs_to :input, inverse: "Input.metas"
+    belongs_to :input, inverse: 'Input.metas'
   end
 
-  entity "Product" do
+  entity 'Product' do
     integer16 :id, optional: true
     string :name
 
@@ -73,4 +74,9 @@ schema "0001 initial" do
     has_many :categories, plural_inverse: true
   end
 
+  entity 'Session' do
+    string :token
+
+    belongs_to :user, inverse: 'User.session'
+  end
 end

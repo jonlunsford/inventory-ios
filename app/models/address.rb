@@ -1,3 +1,3 @@
 class Address < CDQManagedObject
-  include JSONAPI::Serializer
+  include JSONAPI::Serializers::CDQ
 end

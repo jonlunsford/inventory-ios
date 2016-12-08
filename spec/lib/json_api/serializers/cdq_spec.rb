@@ -1,4 +1,4 @@
-describe 'JsonApiSerializer' do
+describe 'JSONAPI::Serializers::CDQ' do
 
   before do
     class << self
@@ -14,15 +14,15 @@ describe 'JsonApiSerializer' do
   end
 
   it 'should add a serialize method' do
-    address = Address.create(city: "Springfield", state: "Oregon", country: "USA", zip: 666)
+    address = Address.create(id: 1, city: "Springfield", state: "Oregon", country: "USA", zip: 666)
 
     address.serialize.should == {
       data: {
         type: "addresses",
+        id: 1,
         attributes: {
           city: "Springfield",
           country: "USA",
-          id: 0,
           lat: 0.0,
           long: 0.0,
           state: "Oregon",
@@ -31,6 +31,9 @@ describe 'JsonApiSerializer' do
         relationships: {
           company: { data: nil },
           input: { data: nil }
+        },
+        links: {
+          self: "http://localhost:4000/api/v1/addresses/1"
         }
       }
     }
@@ -46,7 +49,8 @@ describe 'JsonApiSerializer' do
 
     serialized = company.serialize[:data]
     serialized[:type].should == "companies"
-    serialized[:attributes].should == { id: 1, title: "With Address" }
+    serialized[:id].should == 1
+    serialized[:attributes].should == { title: "With Address" }
     serialized[:relationships][:address][:data].should == { type: "address", id: 1 }
     serialized[:relationships][:owner][:data].should == { type: "owner", id: 1 }
     serialized[:relationships][:categories][:data].count.should == 2
@@ -54,11 +58,11 @@ describe 'JsonApiSerializer' do
 
   it 'should render to json' do
     meta = Meta.create(key: "My Key", value: "My Value")
-    meta.to_json.should == '{"data":{"type":"meta","attributes":{"id":0,"key":"My Key","value":"My Value"},"relationships":{"input":{"data":null}}}}'
+    meta.to_json.should == '{"data":{"type":"meta","id":0,"attributes":{"key":"My Key","value":"My Value"},"relationships":{"input":{"data":null}},"links":{"self":"http:\\/\\/localhost:4000\\/api\\/v1\\/meta\\/0"}}}'
   end
 
   it 'should create from json' do
-    json = '{"data":{"type":"meta","attributes":{"id":1,"key":"My Key","value":"My Value"},"relationships":{"input":{"data":null}}}}'
+    json = '{"data":{"type":"meta", "id": 1,"attributes":{"key":"My Key","value":"My Value"},"relationships":{"input":{"data":null}}}}'
     meta = Meta.from_json(json)
     meta.id.should == 1
     meta.key.should == "My Key"
