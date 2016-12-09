@@ -105,3 +105,4 @@ end
 
 # Remove this if you aren't using CDQ
 task :"build:simulator" => :"schema:build"
+

@@ -8,6 +8,7 @@ describe 'User' do
   end
 
   after do
+    User.all.each { |u| u.destroy }
     cdq.reset!
   end
 
@@ -35,14 +36,28 @@ describe 'User' do
     user.companies.count.should == 2
   end
 
-  it 'should parse registration errors' do
-    user_a = User.create(email: 'test@test.com', password: 'password', password_confirmation: 'password')
-    user_a.register
-    user_b = User.create(email: 'test@test.com', password: 'password', password_confirmation: 'password')
-    user_b.register
+  context 'with api' do
 
-    wait 3 do
-      user_b.request_errors.first.should == "Email has already been taken"
+    it 'should parse registration errors' do
+      user_a = User.create(email: 'test@test.com', password: 'password', password_confirmation: 'password')
+      user_a.register
+
+      user_b = User.create(email: 'test@test.com', password: 'password', password_confirmation: 'password')
+      user_b.register
+
+      wait 1 do
+        user_b.request_errors.first.should == "Email has already been taken"
+      end
     end
+
+    it 'should log in' do
+      user = User.create(email: 'test@test.com', password: 'asdf1234', password_confirmation: 'asdf1234')
+      user.log_in
+
+      wait 1 do
+        user.session.should.not.be.nil?
+      end
+    end
+
   end
 end

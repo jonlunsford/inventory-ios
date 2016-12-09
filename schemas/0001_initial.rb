@@ -5,8 +5,8 @@ schema '0001 initial' do
     string :password
     string :password_confirmation
 
-    has_many :companies, inverse: 'Company.owner'
-    has_one :session, inverse: 'Session.user'
+    has_many :companies, inverse: 'Company.owner', deletionRule: 'Cascade'
+    has_one :session, inverse: 'Session.user', deletionRule: 'Cascade'
   end
 
   entity 'Company' do
@@ -55,7 +55,7 @@ schema '0001 initial' do
     belongs_to :category
     belongs_to :product
     has_one :address
-    has_many :metas
+    has_many :metas, deletionRule: 'Cascade'
   end
 
   entity 'Meta' do
@@ -70,7 +70,7 @@ schema '0001 initial' do
     integer16 :id, optional: true
     string :name
 
-    has_many :inputs
+    has_many :inputs, deleteionRule: 'Cascade'
     has_many :categories, plural_inverse: true
   end
 

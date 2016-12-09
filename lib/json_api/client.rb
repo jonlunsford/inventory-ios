@@ -2,9 +2,10 @@ module JSONAPI
   class Client
     attr_accessor :base_url, :namespace
 
-    def initialize(base_url, namespace = 'api/v1')
+    def initialize(base_url, user, namespace = 'api/v1')
       @base_url = base_url
       @namespace = namespace
+      @user = user
     end
 
     def get(*args, &block)
@@ -27,28 +28,62 @@ module JSONAPI
       request(:delete, *args, &block)
     end
 
+    def authenticated?
+      @authenticated ||= @user.session && @user.session.token ? true : false
+    end
+
+    def authenticate
+      @user.log_in
+    end
+
     private
 
-    def request(method, *args, &callback)
-      path = '/#{@namespace}/#{args[0]}'
-      params = args[1]
+    def request(method, *args, &block)
+      request_params = {
+        method: method,
+        path: "/#{@namespace}/#{args[0]}",
+        params: args[1]
+      }
 
-      client.send(method, path, params) do |result|
-        if result.success?
-          yield(result.object, result.object.fetch('errors')) if callback
-        elsif result.failure?
-          yield(result.error, result.error.localizedDescription) if callback
-        end
+      if authenticated?
+        authenticated_request(request_params, &block)
+      else
+        unauthenticated_request(request_params, &block)
       end
     end
 
-    def client
-      @client ||= AFMotion::Client.build(@base_url) do
+    def parse_request_errors(http_result)
+      info = http_result.error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]
+      errors = BW::JSON.parse(info)['errors']
+      errors ? errors.map { |e| e['detail'] } : []
+    end
+
+    def authenticated_request(params, &block)
+      authenticated_client.send(params.fetch(:method), params.fetch(:path), params.fetch(:params)) do |result|
+        yield result if block
+      end
+    end
+
+    def unauthenticated_request(params, &block)
+      unauthenticated_client.send(params.fetch(:method), params.fetch(:path), params.fetch(:params)) do |result|
+        yield result if block
+      end
+    end
+
+    def authenticated_client
+      @authenticated_client ||= AFMotion::Client.build(@base_url) do
         request_serializer :json
         response_serializer :json
-        header 'Accept', 'application/json'
         header 'Accept', 'application/vnd.api+json'
-        authorization token: 'Bearer #{Session.first.token}'
+        authorization token: "Bearer #{@user.session.token}"
+      end
+    end
+
+    def unauthenticated_client
+      @unauthenticated_client ||= AFMotion::Client.build(@base_url) do
+        request_serializer :json
+        response_serializer :json
+        header 'Accept', 'application/vnd.api+json'
       end
     end
   end

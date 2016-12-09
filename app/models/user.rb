@@ -6,16 +6,44 @@ class User < CDQManagedObject
       #mp result.operation.response.URL
 
       if result.success?
-        mp result.object
+        log_in
       elsif result.failure?
-        info = result.error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]
-        errors = BW::JSON.parse(info)['errors']
-        @request_errors = errors.map { |e| e['detail'] }
+        parse_request_errors(result)
+      end
+    end
+  end
+
+  def log_in
+    AFMotion::JSON.post("#{base_url}/token", login_params) do |result|
+      if result.success?
+        create_or_update_session_with_token(result.object['access_token'])
+      elsif result.failure?
+        parse_request_errors(result)
       end
     end
   end
 
   private
+
+  def create_or_update_session_with_token(token)
+    if session
+      mp 'UPDATE SESSION'
+      session.token = token
+    else
+      mp 'CREATE SESSION'
+      Session.create(token: token, user: self)
+    end
+
+    cdq.save
+  end
+
+  def login_params
+    {
+      grant_type: 'password',
+      username: email,
+      password: password
+    }
+  end
 
   def registration_params
     {

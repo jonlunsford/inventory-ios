@@ -1,15 +1,15 @@
 module JSONAPI
   module Serializers
     module CDQ
-      attr_accessor :request_errors
+      attr_accessor :request_errors, :client
 
       include JSONAPI::Config
       extend MotionSupport::Concern
 
       module ClassMethods
         def from_json(json)
-          params = BW::JSON.parse(json)["data"]
-          attributes = params["attributes"].merge({ id: params["id"] })
+          params = BW::JSON.parse(json)['data']
+          attributes = params['attributes'].merge(id: params['id'])
           self.create(attributes)
         end
       end
@@ -34,12 +34,10 @@ module JSONAPI
         BW::JSON.generate serialize
       end
 
-      def client
-        @client ||= JSONAPI::Client.new(resource_url)
-      end
-
-      def request_errors=(errors)
-        @request_errors = errors
+      def parse_request_errors(http_result)
+        info = http_result.error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]
+        errors = BW::JSON.parse(info)['errors']
+        @request_errors = errors ? errors.map { |e| e['detail'] } : []
       end
 
       private
