@@ -11,7 +11,7 @@ class AppDelegate < PM::Delegate
     return true if RUBYMOTION_ENV == 'test'
 
     cdq.setup # Remove this if you aren't using CDQ
-    open HomeScreen.new(nav_bar: true)
+    open RegistrationScreen.new(nav_bar: true)
   end
 
   # Remove this if you are only supporting portrait

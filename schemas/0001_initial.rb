@@ -4,6 +4,7 @@ schema '0001 initial' do
     string :email
     string :password
     string :password_confirmation
+    boolean :current_user, default: false
 
     has_many :companies, inverse: 'Company.owner', deletionRule: 'Cascade'
     has_one :session, inverse: 'Session.user', deletionRule: 'Cascade'

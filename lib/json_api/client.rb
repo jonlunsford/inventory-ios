@@ -1,5 +1,7 @@
 module JSONAPI
   class Client
+    include JSONAPI::Helpers
+
     attr_accessor :base_url, :namespace
 
     def initialize(base_url, user, namespace = 'api/v1')
@@ -50,12 +52,6 @@ module JSONAPI
       else
         unauthenticated_request(request_params, &block)
       end
-    end
-
-    def parse_request_errors(http_result)
-      info = http_result.error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]
-      errors = BW::JSON.parse(info)['errors']
-      errors ? errors.map { |e| e['detail'] } : []
     end
 
     def authenticated_request(params, &block)
