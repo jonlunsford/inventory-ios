@@ -24,4 +24,8 @@ describe 'RegistrationScreen' do
   it 'has an password confirmation field' do
     view('Password Confirmation').should.be.kind_of(UITextField)
   end
+
+  it "has link to log in screen" do
+    view('Already have an account? Log In.').should.be.kind_of(UILabel)
+  end
 end

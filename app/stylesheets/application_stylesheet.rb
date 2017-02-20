@@ -82,6 +82,12 @@ class ApplicationStylesheet < RubyMotionQuery::Stylesheet
     st.color = color.black
   end
 
+  def emphasis(st)
+    st.text_alignment = :center
+    st.font = font.italic
+    st.color = color.tint
+  end
+
   def rounded_image(st)
     st.view.layer.cornerRadius = st.frame.width / 2
     st.clips_to_bounds = true

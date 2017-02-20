@@ -31,6 +31,13 @@ class RegistrationScreen < PM::Screen
     append(StandardButton).attr(grid: 'a9:l10',
                                 label: 'Register',
                                 on_touch_up_inside: proc { register_user })
+
+    footer = append(UILabel, :emphasis).style do |st|
+      st.frame = 'a11:l11'
+      st.attributed_text = mastr('Already have an account? Log In.', underline_style: :style_single).build
+    end
+
+    footer.on(:tap) { open LogInScreen.new(nav_bar: true) }
   end
 
   def register_user
@@ -41,7 +48,8 @@ class RegistrationScreen < PM::Screen
 
     user.register do |result|
       if result.success?
-        notifier.success
+        notifier.dismiss
+        #cdq.save
       elsif result.failure?
         notifier.error parse_request_errors(result)
       end
