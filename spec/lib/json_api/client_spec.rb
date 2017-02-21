@@ -31,6 +31,7 @@ describe 'JSONAPI::Client' do
   end
 
   it 'should authenticate' do
+    # @user.register
     @client.authenticate
 
     wait 3 do

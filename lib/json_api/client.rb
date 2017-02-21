@@ -31,7 +31,7 @@ module JSONAPI
     end
 
     def authenticated?
-      @authenticated ||= @user.session && @user.session.token ? true : false
+      @user.session && @user.session.token ? true : false
     end
 
     def authenticate
