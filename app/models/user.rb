@@ -49,5 +49,6 @@ class User < CDQManagedObject
       }
     }
   end
+
 end
 

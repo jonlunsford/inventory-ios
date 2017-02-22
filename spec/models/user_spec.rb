@@ -1,5 +1,11 @@
 describe 'User' do
 
+  def parse_request_errors(http_result)
+    info = http_result.error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]
+    errors = BW::JSON.parse(info)['errors']
+    errors ? errors.map { |e| e['detail'] } : []
+  end
+
   before do
     class << self
       include CDQ
@@ -45,8 +51,12 @@ describe 'User' do
       user_b = User.create(email: 'test@test.com', password: 'password', password_confirmation: 'password')
       user_b.register
 
+      user_b.register do |result|
+        @errors = parse_request_errors(result)
+      end
+
       wait 1 do
-        user_b.request_errors.first.should == "Email has already been taken"
+        @errors.first.should == "Email has already been taken"
       end
     end
 
@@ -59,5 +69,10 @@ describe 'User' do
       end
     end
 
+    #it "deletes from the api" do
+      #user = User.create(email: 'test@test.com', password: 'password', password_confirmation: 'password')
+      #user.destroy!
+      #user.should.be.nil
+    #end
   end
 end
